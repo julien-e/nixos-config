@@ -306,21 +306,4 @@
     source = ./show-keybinds.sh;
     executable = true;
   };
-  
-  # Toggle layout script
-  home.file.".config/mango/toggle-layout.sh" = {
-    text = ''
-      #!/usr/bin/env bash
-      # Toggle between tile and scroller layouts
-      
-      current=$(mmsg -g | grep "layout" | grep -v "kb_layout" | head -1 | awk '{print $3}')
-      
-      if [ "$current" = "S" ]; then
-          mmsg -d setlayout,tile
-      else
-          mmsg -d setlayout,scroller
-      fi
-    '';
-    executable = true;
-  };
 }
