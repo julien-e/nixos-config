@@ -2,11 +2,11 @@
 
 stdenvNoCC.mkDerivation rec {
   pname = "maple-font";
-  version = "7.0-beta30";
+  version = "7.9";
 
   src = fetchzip {
     url = "https://github.com/subframe7536/maple-font/releases/download/v${version}/MapleMono-NF.zip";
-    hash = "sha256-Rxm7BgeHLKRe4IX5kd74xAfh9U5GrPZHVhucGXJBkF0=";
+    hash = "sha256:59098b87c895d871635d37680e88000ae2b2b25b55428195b228ec589e35fb89";
     stripRoot = false;
   };
 
