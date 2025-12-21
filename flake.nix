@@ -51,7 +51,7 @@
                     ./home-manager/julien
                     
                     mangowc.hmModules.mango
-                    dms.homeModules.dankMaterialShell.default
+                    dms.homeModules.dank-material-shell
                   ];
                 };
               };

@@ -1,7 +1,7 @@
 { inputs, outputs, lib, config, pkgs, ... }:
 
 {
-  programs.dankMaterialShell = {
+  programs.dank-material-shell = {
     enable = true;
     systemd.enable = false;
   };
