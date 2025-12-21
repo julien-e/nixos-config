@@ -42,9 +42,20 @@
         
         # Privacy/Security optimizations
         "--disable-search-engine-choice-screen"
+        
+        # DuckDuckGo as default search engine
+        "--search-engine-choice-country"
       ];
     })
   ];
+
+  # Set DuckDuckGo as default search engine
+  programs.chromium = {
+    enable = true;
+    defaultSearchProviderEnabled = true;
+    defaultSearchProviderSearchURL = "https://duckduckgo.com/?q={searchTerms}";
+    defaultSearchProviderSuggestURL = "https://duckduckgo.com/ac/?q={searchTerms}&type=list";
+  };
 
   # Environment variables for GPU acceleration
   environment.sessionVariables = {
@@ -83,41 +94,63 @@
     ];
   };
 
-  # Persist critical data between reboots (bookmarks, passwords, extensions, WideVine)
-  # Create directory first
+  # Persist critical data between reboots
   systemd.tmpfiles.rules = [
     "d /persist/chromium 0700 julien users -"
-    "d /persist/chromium/Default 0700 julien users -"
   ];
 
-  # Bind mount persistent data from disk into tmpfs
-  fileSystems."/home/julien/.config/chromium/Default/Bookmarks" = {
-    device = "/persist/chromium/Default/Bookmarks";
-    options = [ "bind" "nofail" ];
+  # Sync service: load from disk to RAM on boot
+  systemd.user.services.chromium-load = {
+    description = "Load Chromium profile from disk to RAM";
+    wantedBy = [ "default.target" ];
+    after = [ "local-fs.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "chromium-load" ''
+        if [ -d /persist/chromium ]; then
+          ${pkgs.rsync}/bin/rsync -avL --delete /persist/chromium/ ~/.config/chromium/
+        fi
+      '';
+    };
   };
 
-  fileSystems."/home/julien/.config/chromium/Default/Login Data" = {
-    device = "/persist/chromium/Default/Login Data";
-    options = [ "bind" "nofail" ];
+  # Sync service: save from RAM to disk periodically
+  systemd.user.services.chromium-save = {
+    description = "Save Chromium profile from RAM to disk";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "chromium-save" ''
+        if [ -d ~/.config/chromium ]; then
+          ${pkgs.rsync}/bin/rsync -avL --delete --copy-unsafe-links ~/.config/chromium/ /persist/chromium/
+        fi
+      '';
+    };
   };
 
-  fileSystems."/home/julien/.config/chromium/Default/Preferences" = {
-    device = "/persist/chromium/Default/Preferences";
-    options = [ "bind" "nofail" ];
+  # Timer: auto-save every 5 minutes
+  systemd.user.timers.chromium-save = {
+    description = "Save Chromium profile to disk every 5 minutes";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "5min";
+      OnUnitActiveSec = "5min";
+      Unit = "chromium-save.service";
+    };
   };
 
-  fileSystems."/home/julien/.config/chromium/Default/Extensions" = {
-    device = "/persist/chromium/Default/Extensions";
-    options = [ "bind" "nofail" ];
-  };
-
-  fileSystems."/home/julien/.config/chromium/WidevineCdm" = {
-    device = "/persist/chromium/WidevineCdm";
-    options = [ "bind" "nofail" ];
-  };
-
-  fileSystems."/home/julien/.config/chromium/Local State" = {
-    device = "/persist/chromium/Local State";
-    options = [ "bind" "nofail" ];
+  # Save on shutdown
+  systemd.user.services.chromium-shutdown = {
+    description = "Save Chromium profile on shutdown";
+    wantedBy = [ "default.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStop = pkgs.writeShellScript "chromium-shutdown" ''
+        if [ -d ~/.config/chromium ]; then
+          ${pkgs.rsync}/bin/rsync -av --delete ~/.config/chromium/ /persist/chromium/
+        fi
+      '';
+    };
   };
 }

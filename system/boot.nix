@@ -10,6 +10,19 @@
       efi.canTouchEfiVariables = true;
     };
     kernelPackages = pkgs.linuxKernel.packages.linux_xanmod_latest;
+    
+    # Reduce boot noise - hide non-critical warnings
+    kernelParams = [
+      "quiet"
+      "loglevel=3"
+      "systemd.show_status=auto"
+      "rd.udev.log_level=3"
+    ];
+    
+    # Hide NUMA warning (normal on single-socket laptops)
+    extraModprobeConfig = ''
+      options amdgpu dc_dmub_trace=0
+    '';
   };
   
   nix.gc = {
