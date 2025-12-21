@@ -13,6 +13,7 @@
     ./system/virtualization.nix
     ./system/power-management.nix
     ./system/wayland.nix
+    ./system/chromium.nix
   ];
 
   fileSystems."/mnt/ssd" = {
@@ -67,9 +68,6 @@
   environment.systemPackages = with pkgs; [
     vim nano git wget curl claude-code postman ffmpeg
     github-cli github-copilot-cli
-    (chromium.override {
-      enableWideVine = true;
-    })
     kitty foot wl-clipboard wl-clip-persist cliphist wlr-randr
     bitwarden-cli jq gnupg openssh exercism evtest alsa-utils 
     zsh eza bat fzf ripgrep fd cloudflared cider-2
