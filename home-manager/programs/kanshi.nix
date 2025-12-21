@@ -65,14 +65,14 @@
         profile.name = "laptop";
         profile.outputs = [
           {
-            criteria = "Lenovo Group Limited 0x41B5 *";
-            scale = 1.3;
+            criteria = "Lenovo Group Limited 0x41B0 Unknown";
+            scale = 1.5;
             mode = "2560x1600@60.000999Hz";
             position = "0,0";
             status = "enable";
           }
         ];
-        profile.exec = "${pkgs.wlr-randr}/bin/wlr-randr --output eDP-1 --on --mode 2560x1600@60.000999Hz --scale 1.3 --pos 0,0";
+        profile.exec = "${pkgs.wlr-randr}/bin/wlr-randr --output eDP-1 --on --mode 2560x1600@60.000999Hz --scale 1.5 --pos 0,0";
       }
     ];
   };
