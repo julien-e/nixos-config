@@ -17,11 +17,11 @@
       "loglevel=3"
       "systemd.show_status=auto"
       "rd.udev.log_level=3"
+      "amdgpu.sg_display=0"
     ];
     
     # Hide NUMA warning (normal on single-socket laptops)
     extraModprobeConfig = ''
-      options amdgpu dc_dmub_trace=0
     '';
   };
   
