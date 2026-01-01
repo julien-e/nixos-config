@@ -65,8 +65,8 @@
         profile.name = "laptop";
         profile.outputs = [
           {
-            criteria = "Lenovo Group Limited 0x41B0 Unknown";
-            scale = 1.5;
+            criteria = "Lenovo Group Limited 0x41B5 *";
+            scale = 1.3;
             mode = "2560x1600@60.000999Hz";
             position = "0,0";
             status = "enable";
