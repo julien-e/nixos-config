@@ -134,12 +134,12 @@ in
     enable = true;
     settings = {
       user = {
-        name = "Julien Lenne";
-        email = "contact.lenne@gmail.com";
-        signingkey = "2944C14E29F0B7A2";
+        name = "Julien Enard";
+        email = "julien.enard@next-op.com";
+        signingkey = "";
       };
-      commit.gpgsign = true;
-      tag.gpgsign = true;
+      commit.gpgsign = false;
+      tag.gpgsign = false;
       init.defaultBranch = "main";
     };
   };
@@ -151,5 +151,12 @@ in
     pinentry.package = pkgs.pinentry-gnome3;
     defaultCacheTtl = 345600;
     maxCacheTtl = 345600;
+  };
+ 
+  # direnv - Automatic environment loading for nix-shell
+  programs.direnv = {
+    enable = true;
+    enableZshIntegration = true;
+    nix-direnv.enable = true;
   };
 }

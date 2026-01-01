@@ -46,14 +46,9 @@
   console = {
     useXkbConfig = true; # use xkbOptions in tty.
   };
-  services.xserver = {
-    enable = false;
-    xkb = {
-      layout = "us";
-      variant = "intl";
-      options = "compose:ralt";
-    };
-  };
+  services.xserver.enable = false;
+  services.xserver.layout = "us";
+  services.xserver.xkbVariant = "intl";
 
   users.users.julien = {
     isNormalUser = true;
@@ -65,16 +60,14 @@
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
-    vim nano git wget curl claude-code postman ffmpeg
+    vim nano git wget curl
     github-cli github-copilot-cli
     (chromium.override {
       enableWideVine = true;
     })
     kitty foot wl-clipboard wl-clip-persist cliphist wlr-randr
     bitwarden-cli jq gnupg openssh exercism evtest alsa-utils 
-    zsh eza bat fzf ripgrep fd cloudflared cider-2
-    discord grim slurp playwright
-    pgadmin4 direnv
+    zsh eza bat fzf ripgrep fd cloudflared
     (pkgs.writeScriptBin "don" ''
       sudo systemctl start docker.socket docker.service
       echo "Docker started"
@@ -85,10 +78,6 @@
     '')
   ];
 
-  xdg.portal.enable = true; 
-  xdg.portal.extraPortals = with pkgs; [
-    xdg-desktop-portal-wlr
-  ];
 
   system.stateVersion = "25.11";
 }

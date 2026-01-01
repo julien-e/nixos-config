@@ -3,73 +3,69 @@
 {
   services.kanshi = {
     enable = true;
-    
+
     systemdTarget = "";
-    
+
     settings = [
       {
-        profile.name = "dual-hp-xiaomi";
+        profile.name = "triple-N07-Koorui-laptop";
         profile.outputs = [
           {
-            criteria = "Lenovo Group Limited 0x41B0 Unknown";
-            status = "disable";
-          }
-          {
-            criteria = "Hewlett Packard HP Z27n CNK72307H3";
-            scale = 1.0;
-            mode = "2560x1440@59.951000Hz";
+            criteria = "HKC OVERSEAS LIMITED N07 0000000000001";
+            scale = 1.5;
+            mode = "3840x2160@59.997002Hz";
             position = "0,0";
             status = "enable";
           }
           {
-            criteria = "Xiaomi Corporation Mi Monitor 6638000002298";
-            scale = 1.5;
-            mode = "3840x2160@60.000000Hz";
+            criteria = "HKC OVERSEAS LIMITED GN10 0000000000001";
+            scale = 1.0;
+            mode = "2560x1440@60.000000Hz";
             position = "2560,0";
             status = "enable";
           }
+          {
+            criteria = "Lenovo Group Limited 0x41B5 *";
+            scale = 1.3;
+            mode = "1920x1200@60.001999Hz";
+            position = "5120,0";
+            status = "enable";
+          }
         ];
       }
-      
+
       {
-        profile.name = "hp-2k";
+        profile.name = "dual-BenQ-laptop";
         profile.outputs = [
           {
-            criteria = "Lenovo Group Limited 0x41B0 Unknown";
-            status = "disable";
-          }
-          {
-            criteria = "Hewlett Packard HP Z27n CNK72307H3";
+            criteria = "BNQ BenQ XL2411Z JAE06139SL0";
             scale = 1.0;
-            mode = "2560x1440@59.951000Hz";
+            mode = "1920x1080@60.000000Hz";
             position = "0,0";
+            status = "enable";
+          }
+          {
+            criteria = "BNQ BenQ XL2411Z R7E00577SL0";
+            scale = 1.0;
+            mode = "1920x1080@60.000000Hz";
+            position = "1920,0";
+            status = "enable";
+          }
+          {
+            criteria = "Lenovo Group Limited 0x41B5 *";
+            scale = 1.3;
+            mode = "1920x1200@60.001999Hz";
+            position = "3840,0";
             status = "enable";
           }
         ];
       }
-      
-      {
-        profile.name = "xiaomi-4k";
-        profile.outputs = [
-          {
-            criteria = "Lenovo Group Limited 0x41B0 Unknown";
-            status = "disable";
-          }
-          {
-            criteria = "Xiaomi Corporation Mi Monitor 6638000002298";
-            scale = 1.5;
-            mode = "3840x2160@60.000000Hz";
-            position = "0,0";
-            status = "enable";
-          }
-        ];
-      }
-      
+
       {
         profile.name = "laptop";
         profile.outputs = [
           {
-            criteria = "Lenovo Group Limited 0x41B0 Unknown";
+            criteria = "Lenovo Group Limited 0x41B5 *";
             scale = 1.3;
             mode = "2560x1600@60.000999Hz";
             position = "0,0";
@@ -80,6 +76,6 @@
       }
     ];
   };
-  
+
   systemd.user.services.kanshi.Install.WantedBy = lib.mkForce [ ];
 }

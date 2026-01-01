@@ -57,8 +57,6 @@
       repeat_rate=25
       repeat_delay=600
       xkb_rules_layout=us
-      xkb_rules_variant=intl
-      xkb_rules_options=compose:ralt
       
       # ===== Input Devices =====
       # Accept all input devices by default
@@ -206,11 +204,11 @@
       bind=SUPER,n,switch_layout
       
       # Screenshot full screen
-      #bind=SUPER,P,spawn_shell,filename="screenshot-$(date +%Y%m%d-%H%M%S).png" && grim ${config.home.homeDirectory}/Pictures/$filename && notify-send "Screenshot" "Saved: $filename"
+      bind=CTRL,Print,spawn_shell,filename="screenshot-$(date +%Y%m%d-%H%M%S).png" && grim ${config.home.homeDirectory}/Pictures/$filename && notify-send "Screenshot" "Saved: $filename"
       # Screenshot area to file
-      bind=SUPER+CTRL,P,spawn_shell,filename="screenshot-$(date +%Y%m%d-%H%M%S).png" && grim -g "$(slurp)" ${config.home.homeDirectory}/Pictures/$filename && notify-send "Screenshot" "Area saved: $filename"
+      bind=SUPER,Print,spawn_shell,filename="screenshot-$(date +%Y%m%d-%H%M%S).png" && grim -g "$(slurp)" ${config.home.homeDirectory}/Pictures/$filename && notify-send "Screenshot" "Area saved: $filename"
       # Screenshot area to clipboard
-      bind=SUPER+SHIFT,P,spawn_shell,grim -g "$(slurp)" - | wl-copy && notify-send "Screenshot" "Area copied to clipboard"
+      bind=SUPER+SHIFT,Print,spawn_shell,grim -g "$(slurp)" - | wl-copy && notify-send "Screenshot" "Area copied to clipboard"
       
       # Media keys (no comments - will be hidden from viewer)
       bind=none,XF86AudioRaiseVolume,spawn,wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+

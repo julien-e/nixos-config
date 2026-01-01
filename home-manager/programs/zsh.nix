@@ -44,7 +44,7 @@
       dstatus = "systemctl status docker --no-pager -l";
     };
     
-    initContent = ''
+    initExtra = ''
       git() {
         if [ -z "$1" ]; then
           lazygit
