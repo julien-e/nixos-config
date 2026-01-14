@@ -3,7 +3,15 @@
 {
   services.dbus.enable = true;
   services.printing.enable = true;
+  services.printing.drivers = [ pkgs.hplipWithPlugin ];
   services.fwupd.enable = true;
+
+  # Avahi pour la d\u00e9couverte d'imprimantes r\u00e9seau
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
   services.upower.enable = true;
   services.power-profiles-daemon = {
     enable = true;

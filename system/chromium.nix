@@ -1,50 +1,80 @@
 { config, lib, pkgs, ... }:
 
 {
-  # Enable hardware video acceleration
+  # Enable hardware video acceleration for Chromium browsers
   hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
+    enable = lib.mkForce true;
+    enable32Bit = lib.mkForce true;
     extraPackages = with pkgs; [
-      # AMD GPU support (detected from hardware-configuration.nix)
+      # AMD GPU support (RADV is enabled by default)
       mesa
       libva
       libvdpau-va-gl
       libva-vdpau-driver
     ];
+    extraPackages32 = with pkgs.pkgsi686Linux; [
+      mesa
+      libva
+    ];
   };
 
-  # Chromium with optimized flags for GPU + Wayland
-  environment.systemPackages = [
+  # Shared optimized flags for Chromium-based browsers
+  environment.systemPackages = let
+    optimizedFlags = [
+      # GPU acceleration (AMD optimized)
+      "--enable-features=VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,VaapiVideoDecoder,CanvasOopRasterization,UseSkiaRenderer,Vulkan"
+      "--enable-gpu-rasterization"
+      "--enable-zero-copy"
+      "--enable-accelerated-video-decode"
+      "--enable-accelerated-2d-canvas"
+      "--ignore-gpu-blocklist"
+      "--use-vulkan"
+
+      # Wayland native
+      "--ozone-platform=wayland"
+      "--enable-features=UseOzonePlatform"
+      "--enable-wayland-ime"
+
+      # Performance optimizations
+      "--disable-gpu-driver-bug-workarounds"
+      "--enable-oop-rasterization"
+      "--enable-raw-draw"
+      "--enable-parallel-downloading"
+      "--disable-features=UseChromeOSDirectVideoDecoder"
+
+      # Memory & speed optimizations
+      "--max-gum-fps=60"
+      "--enable-quic"
+      "--enable-features=BackForwardCache"
+      "--disable-sync-preferences"
+
+      # Smooth scrolling & UI
+      "--enable-smooth-scrolling"
+      "--enable-features=WebUIDarkMode"
+      "--force-device-scale-factor=1"
+
+      # Privacy/Security optimizations
+      "--disable-search-engine-choice-screen"
+      "--disable-background-networking"
+      "--disable-breakpad"
+
+      # DuckDuckGo as default search engine
+      "--search-engine-choice-country"
+    ];
+  in [
+    # Chromium (open-source)
     (pkgs.chromium.override {
       enableWideVine = true;
-      commandLineArgs = [
-        # GPU acceleration
-        "--enable-features=VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,VaapiVideoDecoder,CanvasOopRasterization,UseSkiaRenderer"
-        "--enable-gpu-rasterization"
-        "--enable-zero-copy"
-        "--enable-accelerated-video-decode"
-        "--ignore-gpu-blocklist"
-        
-        # Wayland native
-        "--ozone-platform=wayland"
-        "--enable-features=UseOzonePlatform"
-        "--enable-wayland-ime"
-        
-        # Performance
-        "--disable-gpu-driver-bug-workarounds"
-        "--enable-oop-rasterization"
-        "--enable-raw-draw"
-        
-        # Smooth scrolling
-        "--enable-smooth-scrolling"
-        "--enable-features=WebUIDarkMode"
-        
-        # Privacy/Security optimizations
-        "--disable-search-engine-choice-screen"
-        
-        # DuckDuckGo as default search engine
-        "--search-engine-choice-country"
+      commandLineArgs = optimizedFlags;
+    })
+
+    # Google Chrome (proprietary, better codec/DRM support for Netflix, etc.)
+    (pkgs.google-chrome.override {
+      commandLineArgs = optimizedFlags ++ [
+        # Additional Chrome-specific optimizations
+        "--enable-features=VaapiIgnoreDriverChecks"
+        "--use-gl=desktop"
+        "--disable-features=UseChromeOSDirectVideoDecoder"
       ];
     })
   ];
