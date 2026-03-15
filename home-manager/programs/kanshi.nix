@@ -62,6 +62,32 @@
       }
 
       {
+        profile.name = "dual-BenQ-2-laptop";
+        profile.outputs = [
+          {
+            criteria = "BNQ BenQ XL2411Z R7E00577SL0";
+            scale = 1.0;
+            mode = "1920x1080@60.000000Hz";
+            position = "1920,0";
+            status = "enable";
+          }
+          {
+            criteria = "BNQ BenQ GW2470 79H01179SL0";
+            scale = 1.0;
+            mode = "1920x1080@60.000000Hz";
+            position = "0,0";
+            status = "enable";
+          }
+          {
+            criteria = "Lenovo Group Limited 0x41B5 *";
+            scale = 1.3;
+            mode = "1920x1200@60.001999Hz";
+            position = "3840,0";
+            status = "enable";
+          }
+        ];
+      }
+      {
         profile.name = "laptop";
         profile.outputs = [
           {

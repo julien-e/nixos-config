@@ -2,6 +2,7 @@
 
 let
   maple-font = pkgs.callPackage ../../home-manager/programs/maple-font.nix {};
+  anytype-fixed = pkgs.callPackage ../../home-manager/programs/anytype.nix {};
 in
 {
   imports = [
@@ -25,11 +26,15 @@ in
   home.packages = with pkgs; [
     eza bat fzf zoxide tldr mise
     lazygit lazydocker git
+    postgresql
     maple-font nerd-fonts.symbols-only
     nautilus grim slurp wl-clipboard libnotify
     rofi  # Application launcher and dmenu
     ferdium
     kanshi wlr-randr
+    mpv
+    anytype-fixed
+    rnnoise-plugin  # Plugin de réduction de bruit pour EasyEffects
   ];
 
   home.file.".config/nix-shells/haskell.nix".text = ''
@@ -121,6 +126,19 @@ in
       templates = "${config.home.homeDirectory}/Templates";
       publicShare = "${config.home.homeDirectory}/Public";
     };
+    desktopEntries.anytype = {
+      name = "Anytype";
+      genericName = "P2P note-taking tool";
+      comment = "Local-first, P2P note-taking app";
+      exec = "anytype %U";
+      icon = "anytype";
+      terminal = false;
+      categories = [ "Utility" "Office" "Calendar" "ProjectManagement" ];
+      mimeType = [ "x-scheme-handler/anytype" ];
+      settings = {
+        StartupWMClass = "anytype";
+      };
+    };
   };
   
   home.pointerCursor = {
@@ -152,6 +170,31 @@ in
     defaultCacheTtl = 345600;
     maxCacheTtl = 345600;
   };
+
+  # Réduction de bruit automatique (comme Krisp)
+  services.easyeffects = {
+    enable = true;
+    preset = "noise-reduction";
+  };
+
+  # Preset EasyEffects pour la réduction de bruit sur le micro
+  home.file.".config/easyeffects/input/noise-reduction.json".text = ''
+    {
+      "input": {
+        "blocklist": [],
+        "plugins_order": ["rnnoise#0"],
+        "rnnoise#0": {
+          "bypass": false,
+          "enable-vad": true,
+          "input-gain": 0.0,
+          "output-gain": 0.0,
+          "model-path": "",
+          "release": 50.0,
+          "vad-thres": 85.0
+        }
+      }
+    }
+  '';
  
   # direnv - Automatic environment loading for nix-shell
   programs.direnv = {

@@ -66,7 +66,19 @@
         command nvim "$@"
         kitty @ set-spacing padding=10 margin=0 2>/dev/null || true
       }
-      
+
+      scan() {
+        local out="''${1:-$HOME/scan_$(date +%Y%m%d_%H%M%S).jpg}"
+        echo "Scan en cours..."
+        local job
+        job=$(curl -s -X POST -H "Content-Type: text/xml" \
+          -d '<?xml version="1.0"?><scan:ScanSettings xmlns:scan="http://schemas.hp.com/imaging/escl/2011/05/03" xmlns:pwg="http://www.pwg.org/schemas/2010/12/sm"><pwg:Version>2.0</pwg:Version><scan:Intent>Document</scan:Intent><pwg:InputSource>Platen</pwg:InputSource><pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat><scan:ColorMode>Grayscale8</scan:ColorMode><scan:XResolution>300</scan:XResolution><scan:YResolution>300</scan:YResolution></scan:ScanSettings>' \
+          -D - http://192.168.1.113:8080/eSCL/ScanJobs | grep -i location | sed 's/Location: //' | tr -d '\r\n')
+        sleep 6
+        curl -s -o "$out" "''${job}/NextDocument"
+        echo "Scanné: $out"
+      }
+
       bindkey '^p' history-search-backward
       bindkey '^n' history-search-forward
       bindkey '^[w' kill-region

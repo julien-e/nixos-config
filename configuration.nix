@@ -41,13 +41,10 @@
     };
   };
 
-  #console.keyMap = "us";
-  #services.xserver.xkb.layout = "us";
-  #services.xserver.xkb.variant = "intl";
-
   console = {
     useXkbConfig = true; # use xkbOptions in tty.
   };
+
   services.xserver = {
     enable = false;
     xkb = {
@@ -60,7 +57,7 @@
   users.users.julien = {
     isNormalUser = true;
     description = "Julien Enard";
-    extraGroups = [ "networkmanager" "wheel" "video" "input" "seat" "docker" "vmware" "lp" ];
+    extraGroups = [ "networkmanager" "wheel" "video" "input" "seat" "docker" "vmware" "lp" "scanner"];
     shell = pkgs.zsh;
   };
 
@@ -68,13 +65,15 @@
   hardware.enableRedistributableFirmware = true;
 
   environment.systemPackages = with pkgs; [
-    vim nano git wget curl claude-code postman ffmpeg
+    vim vim-full nano git wget curl claude-code postman ffmpeg dbeaver-bin
     github-cli github-copilot-cli
     kitty foot wl-clipboard wl-clip-persist cliphist wlr-randr
     bitwarden-cli jq gnupg openssh exercism evtest alsa-utils 
     zsh eza bat fzf ripgrep fd cloudflared cider-2
     discord grim slurp playwright
-    pgadmin4 direnv
+    pgadmin4 direnv fprintd awscli2
+    flatpak rclone simple-scan hplipWithPlugin
+    gimp inkscape gImageReader tesseract webcord
     (pkgs.writeScriptBin "don" ''
       sudo systemctl start docker.socket docker.service
       echo "Docker started"
@@ -85,6 +84,28 @@
     '')
   ];
 
+  # Impression HP
+  services.printing.enable = true;
+  services.printing.drivers = [ pkgs.hplipWithPlugin ];
+
+  # Scanner HP
+  hardware.sane.enable = true;
+  hardware.sane.extraBackends = [ pkgs.hplipWithPlugin ];
+
+  services.flatpak.enable = true;
+  
+  # programs.noisetorch.enable = true;  # Remplacé par EasyEffects
+
+  services.fprintd.enable = true;
+  # services.fprintd.tod.enable = true;
+  # services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
+  # services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix-vfs0050;
+
+  security.pam.services.login.fprintAuth = true;
+  security.pam.services.sudo.fprintAuth = true;
+  # Si vous utilisez un écran de verrouillage (GDM, SDDM, Swaylock, etc.)
+  security.pam.services.gdm-fingerprint.fprintAuth = true;
+  
   xdg.portal.enable = true; 
   xdg.portal.extraPortals = with pkgs; [
     xdg-desktop-portal-wlr
@@ -92,3 +113,4 @@
 
   system.stateVersion = "25.11";
 }
+
